@@ -1,0 +1,85 @@
+### Minhas Despesas — exemplos de chamadas (VS Code REST Client / Thunder Client)
+### Base: http://localhost:3000
+### Após login/register o cookie httpOnly `finance_token` é definido automaticamente.
+
+@base = http://localhost:3000
+
+### Cadastro
+POST {{base}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Maria Silva",
+  "email": "maria@exemplo.com",
+  "password": "123456"
+}
+
+### Login
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "maria@exemplo.com",
+  "password": "123456"
+}
+
+### Usuário atual (envie o cookie finance_token)
+GET {{base}}/api/auth/me
+
+### Logout
+POST {{base}}/api/auth/logout
+
+### Dashboard — totais e dados de gráficos
+GET {{base}}/api/stats/dashboard
+
+### Listar movimentações (filtros opcionais)
+GET {{base}}/api/transactions?month=5&year=2026&type=saida&category=mercado&search=extra&sort=desc
+
+### Criar movimentação
+POST {{base}}/api/transactions
+Content-Type: application/json
+
+{
+  "title": "Compra no mercado",
+  "value": 250.5,
+  "type": "saida",
+  "category": "mercado",
+  "description": "Itens da semana",
+  "date": "2026-05-10"
+}
+
+### Atualizar movimentação (substitua o ID)
+PUT {{base}}/api/transactions/SEU_ID_AQUI
+Content-Type: application/json
+
+{
+  "title": "Compra no mercado (atualizado)",
+  "value": 280,
+  "type": "saida",
+  "category": "mercado",
+  "description": "Inclui limpeza",
+  "date": "2026-05-10"
+}
+
+### Excluir movimentação
+DELETE {{base}}/api/transactions/SEU_ID_AQUI
+
+### Relatório mensal
+GET {{base}}/api/stats/report?month=5&year=2026
+
+### Atualizar nome do perfil
+PATCH {{base}}/api/user/profile
+Content-Type: application/json
+
+{
+  "name": "Maria S."
+}
+
+### Alterar senha
+PATCH {{base}}/api/user/password
+Content-Type: application/json
+
+{
+  "currentPassword": "123456",
+  "newPassword": "654321"
+}
