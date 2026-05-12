@@ -101,7 +101,12 @@ export function TransactionFilters({
         </Select>
       </div>
       <div className="mt-4 flex flex-wrap justify-end gap-2">
-        <Button type="button" variant="secondary" onClick={() => onSearch()}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => onSearch()}
+          className="w-full sm:w-auto"
+        >
           Aplicar filtros
         </Button>
       </div>
