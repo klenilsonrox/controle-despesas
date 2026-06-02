@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import Transaction from "@/models/Transaction";
 import { isValidCategory } from "@/lib/categories";
+import { parseLocalDateInput } from "@/lib/format";
 
 function buildFilter(userId, { month, year, category, type, search }) {
   const filter = { user: new mongoose.Types.ObjectId(userId) };
@@ -91,6 +92,11 @@ export async function createTransaction(userId, body) {
     return { error: "Valor inválido" };
   }
 
+  const parsedDate = parseLocalDateInput(date);
+  if (!parsedDate) {
+    return { error: "Data inválida" };
+  }
+
   await connectDB();
   const doc = await Transaction.create({
     title: String(title).trim(),
@@ -98,7 +104,7 @@ export async function createTransaction(userId, body) {
     type,
     category,
     description: description != null ? String(description) : "",
-    date: new Date(date),
+    date: parsedDate,
     user: userId,
   });
 
@@ -137,6 +143,14 @@ export async function updateTransaction(userId, id, body) {
     return { error: "Valor inválido" };
   }
 
+  let parsedDate = existing.date;
+  if (date != null) {
+    parsedDate = parseLocalDateInput(date);
+    if (!parsedDate) {
+      return { error: "Data inválida" };
+    }
+  }
+
   await connectDB();
   const doc = await Transaction.findOneAndUpdate(
     { _id: id, user: userId },
@@ -146,7 +160,7 @@ export async function updateTransaction(userId, id, body) {
       type: nextType,
       category: nextCategory,
       description: description != null ? String(description) : existing.description,
-      date: date != null ? new Date(date) : existing.date,
+      date: parsedDate,
     },
     { new: true }
   ).lean();
